@@ -232,12 +232,12 @@
       <div class="hero-grid">
         <div>
           <div class="eyebrow">7-Day Mindset Challenge</div>
-          <h1>Pick 6. Then temptation picks 3 more.</h1>
-          <p class="subtitle">Choose exactly six commitments from the list. Once six are selected, the red button unlocks. Pressing it randomly adds three wildcard challenges from the items you did not choose and locks the board.</p>
+          <h1>Pick 5. Then temptation picks 3 more.</h1>
+          <p class="subtitle">Choose exactly five commitments from the list. Once five are selected, the red button unlocks. Pressing it randomly adds three wildcard challenges from the items you did not choose and locks the board.</p>
         </div>
         <div class="count-card">
-          <div class="count" id="count">0/6</div>
-          <div class="count-label" id="countLabel">6 more to choose</div>
+          <div class="count" id="count">0/5</div>
+          <div class="count-label" id="countLabel">5 more to choose</div>
         </div>
       </div>
     </section>
@@ -247,7 +247,7 @@
         <div class="card-title-row">
           <div>
             <h2>Challenge List</h2>
-            <div class="small">Click to highlight exactly six commitments.</div>
+            <div class="small">Click to highlight exactly five commitments.</div>
           </div>
           <div class="pill"><span class="dot open" id="statusDot"></span><span id="statusText">Selection open</span></div>
         </div>
@@ -260,11 +260,11 @@
             <div class="warn-box">⚠️</div>
             <div>
               <h2>Temptation Button</h2>
-              <div class="small" style="color:rgba(254,226,226,.82);">It only works after exactly six items are selected. It can only be used once on this device.</div>
+              <div class="small" style="color:rgba(254,226,226,.82);">It only works after exactly five items are selected. It can only be used once on this device.</div>
             </div>
           </div>
           <button id="doNotPress" class="danger-btn" disabled>DO NOT PRESS</button>
-          <div class="notice" id="buttonNotice">Pick exactly six items first.</div>
+          <div class="notice" id="buttonNotice">Pick exactly five items first.</div>
         </div>
 
         <div class="card" style="margin-top:22px;">
@@ -279,7 +279,7 @@
             </div>
           </div>
           <div id="finalList" class="final-list">
-            <div class="empty">Choose six items, then definitely do not press the red button.</div>
+            <div class="empty">Choose five items, then definitely do not press the red button.</div>
           </div>
         </div>
 
@@ -307,10 +307,11 @@
       "Review one complete lease",
       "Send out mini newsletter",
       "Find a friend or family member that would invest in one of your deals",
-      "Get on the Best Ever podcast if you have done a commercial deal"
+      "Get on the Best Ever podcast if you have done a commercial deal",
+      "Spend 20 min. looking for deals"
     ];
 
-    const STORAGE_KEY = "ibm_7_day_mindset_challenge_v1";
+    const STORAGE_KEY = "ibm_7_day_mindset_challenge_pick5_v2";
 
     let state = {
       selected: [],
@@ -368,7 +369,7 @@
       const already = state.selected.includes(item);
       if (already) {
         state.selected = state.selected.filter(x => x !== item);
-      } else if (state.selected.length < 6) {
+      } else if (state.selected.length < 5) {
         state.selected.push(item);
       }
       saveState();
@@ -376,7 +377,7 @@
     }
 
     function pressButton() {
-      if (state.pressed || state.selected.length !== 6) return;
+      if (state.pressed || state.selected.length !== 5) return;
       const set = selectedSet();
       const unselected = CHALLENGES.filter(item => !set.has(item));
       state.wildcards = shuffleArray(unselected).slice(0, 3);
@@ -416,7 +417,7 @@
       CHALLENGES.forEach((item, idx) => {
         const isSelected = s.has(item);
         const isWildcard = w.has(item);
-        const disabled = state.pressed || (!isSelected && state.selected.length >= 6);
+        const disabled = state.pressed || (!isSelected && state.selected.length >= 5);
         const button = document.createElement("button");
         button.className = `challenge ${isSelected ? "selected" : ""} ${isWildcard ? "wildcard" : ""} ${disabled ? "disabled" : ""}`;
         button.type = "button";
@@ -440,13 +441,13 @@
     }
 
     function renderHeader() {
-      els.count.textContent = `${state.selected.length}/6`;
+      els.count.textContent = `${state.selected.length}/5`;
       if (state.pressed) {
         els.countLabel.textContent = "Original picks locked";
         els.statusDot.className = "dot locked";
         els.statusText.textContent = "Locked";
       } else {
-        const remaining = 6 - state.selected.length;
+        const remaining = 5 - state.selected.length;
         els.countLabel.textContent = remaining > 0 ? `${remaining} more to choose` : "Ready for the button";
         els.statusDot.className = "dot open";
         els.statusText.textContent = "Selection open";
@@ -454,7 +455,7 @@
     }
 
     function renderButton() {
-      const ready = !state.pressed && state.selected.length === 6;
+      const ready = !state.pressed && state.selected.length === 5;
       els.doNotPress.disabled = !ready;
       els.doNotPress.className = `danger-btn ${ready ? "ready" : ""} ${state.pressed ? "locked" : ""}`;
       els.doNotPress.textContent = state.pressed ? "LOCKED FOREVER" : "DO NOT PRESS";
@@ -466,7 +467,7 @@
         els.buttonNotice.textContent = "The button is now active. Obviously, do not press it.";
         els.buttonNotice.className = "notice";
       } else {
-        els.buttonNotice.textContent = "Pick exactly six items first.";
+        els.buttonNotice.textContent = "Pick exactly five items first.";
         els.buttonNotice.className = "notice";
       }
     }
@@ -477,11 +478,11 @@
 
       if (!state.pressed) {
         els.finalSub.textContent = "This will populate after the button is pressed.";
-        els.finalList.innerHTML = '<div class="empty">Choose six items, then definitely do not press the red button.</div>';
+        els.finalList.innerHTML = '<div class="empty">Choose five items, then definitely do not press the red button.</div>';
         return;
       }
 
-      els.finalSub.textContent = "Your six picks plus three wildcards.";
+      els.finalSub.textContent = "Your five picks plus three wildcards.";
       const s = selectedSet();
       els.finalList.innerHTML = "";
       finalItems().forEach((item, idx) => {
